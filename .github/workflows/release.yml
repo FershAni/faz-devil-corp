@@ -156,7 +156,8 @@ jobs:
           printf -v text 'Faz Devil Corp %s\n\n%s\n\nWindows и Android: %s' "$VERSION" "$NOTES" "$RELEASE_URL"
           # Count UTF-16 units conservatively for Telegram's caption and message limits.
           length=$(printf '%s' "$text" | iconv -f UTF-8 -t UTF-16LE | wc -c)
-          if (( length <= 2048 && $(stat -c %s "$apk") <= 50000000 && $(stat -c %s "$windows") <= 50000000 )); then
+          # Leave room for multipart headers in the combined request.
+          if (( length <= 2048 && $(stat -c %s "$apk") + $(stat -c %s "$windows") <= 49000000 )); then
             media=$(jq -cn --arg caption "$text" '[
               {type:"document", media:"attach://windows", caption:$caption},
               {type:"document", media:"attach://android"}

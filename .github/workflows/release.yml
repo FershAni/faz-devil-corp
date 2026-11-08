@@ -145,12 +145,16 @@ jobs:
         platform: [windows, android]
     steps:
       - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          name: faz-builds
+          path: release-files
       - name: Post release in Telegram
         env:
           BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          FILES_CHAT_ID: ${{ secrets.TELEGRAM_FILES_CHAT_ID }}
           VERSION: ${{ inputs.version }}
           NOTES: ${{ inputs.notes }}
-          RELEASE_URL: ${{ needs.release.outputs.url }}
           PROJECT_URL: ${{ github.server_url }}/${{ github.repository }}
         run: python3 .github/post-release.py "${{ matrix.platform }}"

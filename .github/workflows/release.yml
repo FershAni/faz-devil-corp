@@ -133,12 +133,16 @@ jobs:
           printf 'GitHub Release: %s\n' "$url" >> "$GITHUB_STEP_SUMMARY"
 
   telegram:
+    name: Telegram · ${{ matrix.platform }}
     needs: release
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        platform: [windows, android]
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: faz-builds
+      - uses: actions/checkout@v5
       - name: Post release in Telegram
         env:
           BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -146,40 +150,5 @@ jobs:
           VERSION: ${{ inputs.version }}
           NOTES: ${{ inputs.notes }}
           RELEASE_URL: ${{ needs.release.outputs.url }}
-        run: |
-          if [[ -z "$BOT_TOKEN" || -z "$CHAT_ID" ]]; then
-            echo 'Configure TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID.'
-            exit 1
-          fi
-          apk=FazDevilCorp-Android-Test.apk
-          windows=FazDevilCorp-Windows-x64.zip
-          printf -v text 'Faz Devil Corp %s\n\n%s\n\nWindows и Android: %s' "$VERSION" "$NOTES" "$RELEASE_URL"
-          # Count UTF-16 units conservatively for Telegram's caption and message limits.
-          length=$(printf '%s' "$text" | iconv -f UTF-8 -t UTF-16LE | wc -c)
-          # Leave room for multipart headers in the combined request.
-          if (( length <= 2048 && $(stat -c %s "$apk") + $(stat -c %s "$windows") <= 49000000 )); then
-            media=$(jq -cn --arg caption "$text" '[
-              {type:"document", media:"attach://windows", caption:$caption},
-              {type:"document", media:"attach://android"}
-            ]')
-            response=$(curl -s --max-time 180 "https://api.telegram.org/bot$BOT_TOKEN/sendMediaGroup" \
-              --form-string "chat_id=$CHAT_ID" --form-string "media=$media" \
-              -F "windows=@$windows" -F "android=@$apk")
-          elif (( length <= 2048 && $(stat -c %s "$apk") <= 50000000 )); then
-            response=$(curl -s --max-time 180 "https://api.telegram.org/bot$BOT_TOKEN/sendDocument" \
-              --form-string "chat_id=$CHAT_ID" --form-string "caption=$text" -F "document=@$apk")
-          else
-            if (( length > 8192 )); then
-              preview=$(printf '%s' "$NOTES" | jq -Rs '.[0:1500]' -r)
-              printf -v text 'Faz Devil Corp %s\n\n%s…\n\nПолный список изменений и файлы: %s' "$VERSION" "$preview" "$RELEASE_URL"
-            fi
-            response=$(curl -s --max-time 30 "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
-              --data-urlencode "chat_id=$CHAT_ID" --data-urlencode "text=$text")
-          fi
-          if ! jq -e '.ok == true' <<< "$response" >/dev/null; then
-            jq -r '.description // "Telegram API request failed"' <<< "$response"
-            exit 1
-          fi
-          jq -r '.result | if type == "array" then .[0] else . end | if .chat.username then
-            "Telegram: https://t.me/\(.chat.username)/\(.message_id)"
-            else "Telegram message ID: \(.message_id)" end' <<< "$response" >> "$GITHUB_STEP_SUMMARY"
+          PROJECT_URL: ${{ github.server_url }}/${{ github.repository }}
+        run: python3 .github/post-release.py "${{ matrix.platform }}"

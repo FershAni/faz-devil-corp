@@ -1,6 +1,31 @@
 # Faz Devil Corp
 
-Исходный код игры Faz Devil Corp. Чтобы открыть проект в Godot, импортируйте файл [project.godot](project.godot) из корня репозитория.
+Faz Devil Corp — кооперативный хоррор от первого лица. Днём управляйте пиццерией вместе с командой, выполняйте заказы и ремонтируйте автоматы. Ночью отправляйтесь на вылазки, собирайте лом и старайтесь выполнить общую квоту.
+
+## Скачать игру
+
+- [Windows x64 (.exe)](https://github.com/FershAni/faz-devil-corp/releases/download/v0.2.6/FazDevilCorp-Campaign-Tablet-Setup-0.2.6.exe)
+- [Android (.apk)](https://github.com/FershAni/faz-devil-corp/releases/download/v0.2.6/FazDevilCorp-Android-0.2.6.apk)
+- [Все релизы](https://github.com/FershAni/faz-devil-corp/releases)
+
+## Запустить из исходников
+
+Проект использует Godot 4.7, GDScript и GodotSteam для интеграции со Steam.
+
+```bash
+git clone https://github.com/FershAni/faz-devil-corp.git
+```
+
+В менеджере проектов Godot выберите **Импорт**, откройте файл [project.godot](project.godot) из скачанного репозитория и нажмите **F6** для запуска текущей сцены или **F5** для запуска игры.
+
+## Документация
+
+- [Дневная смена пиццерии](DAYTIME_SHIFT.md)
+- [Планшет кампании](CAMPAIGN_TABLET.md)
+
+## Роль ИИ
+
+ИИ используется как помощник при подготовке документации проекта, включая этот README.
 
 ## Права на исходный код
 

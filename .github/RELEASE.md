@@ -9,9 +9,9 @@
 ```powershell
 @{
   version = 'v0.3.0-beta.1'
-  android_version_code = 3
+  android_version_code = '3'
   notes = "- Исправлено открытие игрового меню."
-  publish = $true
+  publish = 'true'
 } | ConvertTo-Json -Compress | gh workflow run release.yml --ref main --json
 ```
 

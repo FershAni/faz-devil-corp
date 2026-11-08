@@ -1,0 +1,49 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/world/InteractiveProp.gd" id="1_prop"]
+
+[sub_resource type="StandardMaterial3D" id="Material_body"]
+albedo_color = Color(0.29, 0.15, 0.38, 1)
+
+[sub_resource type="BoxMesh" id="Box_body"]
+material = SubResource("Material_body")
+size = Vector3(0.76, 1.65, 0.72)
+
+[sub_resource type="StandardMaterial3D" id="Material_accent"]
+albedo_color = Color(0.2, 0.85, 0.65, 1)
+
+[sub_resource type="BoxMesh" id="Box_accent"]
+material = SubResource("Material_accent")
+size = Vector3(0.58, 0.32, 0.10)
+
+[sub_resource type="BoxShape3D" id="Shape_body"]
+size = Vector3(0.76, 1.65, 0.72)
+
+[node name="PartyArcade" type="Node3D" node_paths=PackedStringArray("status_light")]
+script = ExtResource("1_prop")
+prop_id = 6
+display_name = "Игровой автомат"
+kind = 1
+price = 85
+cozy_value = 35
+revenue_generation = 24
+maintenance_penalty = 18
+approach_offset = Vector3(0.0, 0, 0.87)
+interaction_offset = Vector3(0, 1.20, 0.43)
+status_light = NodePath("Accent")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.825, 0)
+mesh = SubResource("Box_body")
+
+[node name="Accent" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.26, 0.366)
+mesh = SubResource("Box_accent")
+
+[node name="Collision" type="StaticBody3D" parent="."]
+process_mode = 4
+collision_mask = 0
+
+[node name="Shape" type="CollisionShape3D" parent="Collision"]
+position = Vector3(0, 0.825, 0)
+shape = SubResource("Shape_body")

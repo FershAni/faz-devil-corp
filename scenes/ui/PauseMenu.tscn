@@ -1,0 +1,120 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/pause_menu.gd" id="1_pause_menu"]
+[ext_resource type="PackedScene" path="res://scenes/ui/SettingsMenu.tscn" id="2_settings_menu"]
+
+[node name="PauseMenu" type="Control"]
+process_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_pause_menu")
+
+[node name="Overlay" type="Control" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Dim" type="ColorRect" parent="Overlay"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.66)
+
+[node name="Center" type="CenterContainer" parent="Overlay"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Overlay/Center"]
+custom_minimum_size = Vector2(430, 0)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Overlay/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 18
+
+[node name="Column" type="VBoxContainer" parent="Overlay/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="Label" parent="Overlay/Center/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.3, 0.22, 1)
+theme_override_font_sizes/font_size = 26
+text = "ПАУЗА"
+
+[node name="Notice" type="Label" parent="Overlay/Center/Panel/Margin/Column"]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.52, 0.5, 0.5, 1)
+theme_override_font_sizes/font_size = 13
+text = "Это только твоё меню. Мир, монстры и напарники продолжают двигаться."
+autowrap_mode = 3
+
+[node name="Info" type="Label" parent="Overlay/Center/Panel/Margin/Column"]
+layout_mode = 2
+text = "Смена"
+
+[node name="Crew" type="Label" parent="Overlay/Center/Panel/Margin/Column"]
+layout_mode = 2
+text = "Экипаж"
+
+[node name="ResumeButton" type="Button" parent="Overlay/Center/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "ПРОДОЛЖИТЬ"
+
+[node name="SaveButton" type="Button" parent="Overlay/Center/Panel/Margin/Column"]
+layout_mode = 2
+text = "СОХРАНИТЬ"
+
+[node name="SaveSlots" type="VBoxContainer" parent="Overlay/Center/Panel/Margin/Column"]
+visible = false
+custom_minimum_size = Vector2(620, 0)
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Overlay/Center/Panel/Margin/Column/SaveSlots"]
+text = "ВЫБЕРИТЕ СЛОТ СОХРАНЕНИЯ"
+theme_override_font_sizes/font_size = 23
+
+[node name="Slot1" type="Button" parent="Overlay/Center/Panel/Margin/Column/SaveSlots"]
+custom_minimum_size = Vector2(0, 58)
+
+[node name="Slot2" type="Button" parent="Overlay/Center/Panel/Margin/Column/SaveSlots"]
+custom_minimum_size = Vector2(0, 58)
+
+[node name="Slot3" type="Button" parent="Overlay/Center/Panel/Margin/Column/SaveSlots"]
+custom_minimum_size = Vector2(0, 58)
+
+[node name="Status" type="Label" parent="Overlay/Center/Panel/Margin/Column/SaveSlots"]
+autowrap_mode = 3
+
+[node name="Back" type="Button" parent="Overlay/Center/Panel/Margin/Column/SaveSlots"]
+text = "← НАЗАД"
+
+[node name="SettingsButton" type="Button" parent="Overlay/Center/Panel/Margin/Column"]
+layout_mode = 2
+text = "НАСТРОЙКИ"
+
+[node name="DisconnectButton" type="Button" parent="Overlay/Center/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.36, 0.28, 1)
+text = "ВЫЙТИ ИЗ ИГРЫ"
+
+[node name="Settings" parent="." instance=ExtResource("2_settings_menu")]

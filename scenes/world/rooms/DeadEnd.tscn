@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=3]
+
+
+[sub_resource type="StandardMaterial3D" id="panel"]
+albedo_color = Color(0.22, 0.25, 0.25, 1.0)
+texture_filter = 0
+
+[sub_resource type="BoxMesh" id="Mesh0"]
+material = SubResource("panel")
+size = Vector3(3.44, 2.55, 0.2)
+
+[sub_resource type="BoxShape3D" id="Shape0"]
+size = Vector3(3.44, 2.55, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="rust"]
+albedo_color = Color(0.36, 0.21, 0.15, 1.0)
+texture_filter = 0
+
+[sub_resource type="BoxMesh" id="Mesh1"]
+material = SubResource("rust")
+size = Vector3(3.22, 0.14, 0.065)
+
+[sub_resource type="StandardMaterial3D" id="red"]
+albedo_color = Color(0.94, 0.23, 0.16, 1.0)
+texture_filter = 0
+shading_mode = 0
+emission_enabled = true
+emission = Color(0.94, 0.23, 0.16, 1.0)
+emission_energy_multiplier = 1.15
+
+[sub_resource type="BoxMesh" id="Mesh2"]
+material = SubResource("red")
+size = Vector3(0.36, 0.11, 0.055)
+
+[node name="DeadEnd" type="Node3D"]
+
+[node name="Bulkhead" type="StaticBody3D" parent="."]
+position = Vector3(0, 1.275, 0.13)
+
+[node name="Collision" type="CollisionShape3D" parent="Bulkhead"]
+shape = SubResource("Shape0")
+
+[node name="Mesh" type="MeshInstance3D" parent="Bulkhead"]
+mesh = SubResource("Mesh0")
+metadata/finish = &"panel"
+
+[node name="RibA" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.59, 0.2625)
+mesh = SubResource("Mesh1")
+metadata/finish = &"rust"
+cast_shadow = 0
+gi_mode = 0
+
+[node name="RibB" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.58, 0.2625)
+mesh = SubResource("Mesh1")
+metadata/finish = &"rust"
+cast_shadow = 0
+gi_mode = 0
+
+[node name="LockLight" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.95, 0.26)
+mesh = SubResource("Mesh2")
+cast_shadow = 0
+gi_mode = 0

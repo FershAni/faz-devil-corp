@@ -1,0 +1,174 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/settings_menu.gd" id="1_settings_menu"]
+
+[node name="SettingsMenu" type="CanvasLayer"]
+layer = 10
+visible = false
+process_mode = 3
+script = ExtResource("1_settings_menu")
+
+[node name="Root" type="Control" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Dim" type="ColorRect" parent="Root"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.72)
+
+[node name="Center" type="CenterContainer" parent="Root"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Root/Center"]
+custom_minimum_size = Vector2(640, 0)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Root/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 16
+
+[node name="Column" type="VBoxContainer" parent="Root/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Head" type="HBoxContainer" parent="Root/Center/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Root/Center/Panel/Margin/Column/Head"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.3, 0.22, 1)
+theme_override_font_sizes/font_size = 24
+text = "НАСТРОЙКИ"
+
+[node name="Spacer" type="Control" parent="Root/Center/Panel/Margin/Column/Head"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CloseX" type="Button" parent="Root/Center/Panel/Margin/Column/Head"]
+custom_minimum_size = Vector2(44, 0)
+layout_mode = 2
+tooltip_text = "Закрыть настройки"
+theme_override_colors/font_color = Color(0.86, 0.36, 0.28, 1)
+theme_override_font_sizes/font_size = 18
+text = "×"
+
+[node name="Tabs" type="HBoxContainer" parent="Root/Center/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TabAudio" type="Button" parent="Root/Center/Panel/Margin/Column/Tabs"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+text = "ЗВУК"
+
+[node name="TabVideo" type="Button" parent="Root/Center/Panel/Margin/Column/Tabs"]
+layout_mode = 2
+toggle_mode = true
+text = "ЭКРАН"
+
+[node name="Body" type="VBoxContainer" parent="Root/Center/Panel/Margin/Column"]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+
+[node name="Audio" type="VBoxContainer" parent="Root/Center/Panel/Margin/Column/Body"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Video" type="VBoxContainer" parent="Root/Center/Panel/Margin/Column/Body"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ModeRow" type="HBoxContainer" parent="Root/Center/Panel/Margin/Column/Body/Video"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ModeLabel" type="Label" parent="Root/Center/Panel/Margin/Column/Body/Video/ModeRow"]
+custom_minimum_size = Vector2(210, 0)
+layout_mode = 2
+text = "Режим экрана"
+
+[node name="Mode" type="OptionButton" parent="Root/Center/Panel/Margin/Column/Body/Video/ModeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ResRow" type="HBoxContainer" parent="Root/Center/Panel/Margin/Column/Body/Video"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ResLabel" type="Label" parent="Root/Center/Panel/Margin/Column/Body/Video/ResRow"]
+custom_minimum_size = Vector2(210, 0)
+layout_mode = 2
+text = "Разрешение"
+
+[node name="Resolution" type="OptionButton" parent="Root/Center/Panel/Margin/Column/Body/Video/ResRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FpsRow" type="HBoxContainer" parent="Root/Center/Panel/Margin/Column/Body/Video"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="FpsLabel" type="Label" parent="Root/Center/Panel/Margin/Column/Body/Video/FpsRow"]
+custom_minimum_size = Vector2(210, 0)
+layout_mode = 2
+text = "Максимум кадров"
+
+[node name="MaxFps" type="OptionButton" parent="Root/Center/Panel/Margin/Column/Body/Video/FpsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VSync" type="CheckBox" parent="Root/Center/Panel/Margin/Column/Body/Video"]
+layout_mode = 2
+button_pressed = true
+text = "Вертикальная синхронизация (V-Sync)"
+
+[node name="VideoHint" type="Label" parent="Root/Center/Panel/Margin/Column/Body/Video"]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.48, 0.48, 1)
+theme_override_font_sizes/font_size = 13
+text = "«Без рамки» - окно во весь экран без смены разрешения: alt+Tab работает быстрее всех."
+autowrap_mode = 3
+
+[node name="Actions" type="HBoxContainer" parent="Root/Center/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ResetButton" type="Button" parent="Root/Center/Panel/Margin/Column/Actions"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "СБРОСИТЬ"
+
+[node name="SaveButton" type="Button" parent="Root/Center/Panel/Margin/Column/Actions"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "СОХРАНИТЬ"
+
+[node name="Feedback" type="Label" parent="Root/Center/Panel/Margin/Column"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.72, 0.55, 1)
+theme_override_font_sizes/font_size = 14
+text = ""
+horizontal_alignment = 1

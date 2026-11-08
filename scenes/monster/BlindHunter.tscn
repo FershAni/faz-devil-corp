@@ -1,0 +1,46 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scenes/monster/blind_hunter.gd" id="1_blind_hunter"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_skin"]
+albedo_color = Color(0.045, 0.05, 0.055, 1)
+roughness = 0.9
+metallic = 0.0
+specular_mode = 2
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_body"]
+radius = 0.42
+height = 2.4
+radial_segments = 10
+
+[sub_resource type="BoxMesh" id="BoxMesh_head"]
+size = Vector3(0.34, 0.46, 0.9)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_touch"]
+radius = 0.42
+height = 2.4
+
+[node name="BlindHunter" type="Node3D"]
+script = ExtResource("1_blind_hunter")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+mesh = SubResource("CapsuleMesh_body")
+surface_material_override/0 = SubResource("StandardMaterial3D_skin")
+
+[node name="Head" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05, -0.35)
+mesh = SubResource("BoxMesh_head")
+surface_material_override/0 = SubResource("StandardMaterial3D_skin")
+
+[node name="Touch" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="Shape" type="CollisionShape3D" parent="Touch"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+shape = SubResource("CapsuleShape3D_touch")
+
+[node name="Sync" type="MultiplayerSynchronizer" parent="."]
+delta_interval = 0.05

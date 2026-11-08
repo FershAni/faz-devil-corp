@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3]
+
+[sub_resource type="StandardMaterial3D" id="Backing"]
+shading_mode = 0
+albedo_color = Color(0.027, 0.047, 0.063, 1)
+
+[sub_resource type="BoxMesh" id="Plate"]
+material = SubResource("Backing")
+size = Vector3(3.3, 0.54, 0.08)
+
+[node name="DoorSign" type="Node3D"]
+
+[node name="Plate" type="MeshInstance3D" parent="."]
+position = Vector3(0, 2.9, 0.34)
+mesh = SubResource("Plate")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="Text" type="Label3D" parent="."]
+position = Vector3(0, 2.9, 0.40)
+text = "ПРОХОД"

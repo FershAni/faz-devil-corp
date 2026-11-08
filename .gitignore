@@ -1,0 +1,22 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Local tooling and generated builds
+/.agent_out/
+/.agents/
+/.qoder/
+/build/
+/installer/out/
+
+# Local credentials and signing keys
+.env
+.env.*
+*.keystore
+*.jks
+*.pfx
+*.p12
+
+# Local probes, screenshots and release helpers
+/tools/
+*.log

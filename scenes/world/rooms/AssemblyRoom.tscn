@@ -1,0 +1,240 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://scenes/world/rooms/dungeon_room.gd" id="room"]
+[ext_resource type="PackedScene" path="res://scenes/world/rooms/RoomShell.tscn" id="shell"]
+
+[sub_resource type="StandardMaterial3D" id="black"]
+albedo_color = Color(0.042, 0.059, 0.075, 1.0)
+
+[sub_resource type="BoxMesh" id="Mesh0"]
+material = SubResource("black")
+size = Vector3(3.2, 0.18, 0.48)
+
+[sub_resource type="StandardMaterial3D" id="amber"]
+albedo_color = Color(1.0, 0.59, 0.17, 1.0)
+shading_mode = 0
+emission_enabled = true
+emission = Color(1.0, 0.59, 0.17, 1.0)
+emission_energy_multiplier = 1.15
+
+[sub_resource type="BoxMesh" id="Mesh1"]
+material = SubResource("amber")
+size = Vector3(2.85, 0.07, 0.24)
+
+[sub_resource type="BoxMesh" id="Mesh2"]
+material = SubResource("amber")
+size = Vector3(0.36, 0.13, 0.21)
+
+[sub_resource type="BoxMesh" id="Mesh3"]
+material = SubResource("black")
+size = Vector3(4.25, 0.62, 0.08)
+
+[sub_resource type="StandardMaterial3D" id="rust"]
+albedo_color = Color(0.36, 0.21, 0.15, 1.0)
+
+[sub_resource type="BoxMesh" id="Mesh4"]
+material = SubResource("rust")
+size = Vector3(2.35, 0.55, 2.35)
+
+[sub_resource type="BoxShape3D" id="Shape0"]
+size = Vector3(2.35, 0.55, 2.35)
+
+[sub_resource type="StandardMaterial3D" id="panel"]
+albedo_color = Color(0.22, 0.25, 0.25, 1.0)
+
+[sub_resource type="BoxMesh" id="Mesh5"]
+material = SubResource("panel")
+size = Vector3(0.4, 3.0, 0.46)
+
+[sub_resource type="BoxShape3D" id="Shape1"]
+size = Vector3(0.4, 3.0, 0.46)
+
+[sub_resource type="BoxMesh" id="Mesh6"]
+material = SubResource("rust")
+size = Vector3(2.55, 0.65, 2.2)
+
+[sub_resource type="BoxShape3D" id="Shape2"]
+size = Vector3(2.55, 0.65, 2.2)
+
+[sub_resource type="BoxMesh" id="Mesh7"]
+material = SubResource("amber")
+size = Vector3(0.57, 0.15, 0.065)
+
+[sub_resource type="StandardMaterial3D" id="wood"]
+albedo_color = Color(0.29, 0.21, 0.15, 1.0)
+
+[sub_resource type="BoxMesh" id="Mesh8"]
+material = SubResource("wood")
+size = Vector3(2.3, 1.15, 1.65)
+
+[sub_resource type="BoxShape3D" id="Shape3"]
+size = Vector3(2.3, 1.15, 1.65)
+
+[node name="AssemblyRoom" type="Node3D"]
+script = ExtResource("room")
+room_kind = 0
+sector_name = "СБОРКА"
+
+[node name="Shell" parent="." instance=ExtResource("shell")]
+
+[node name="Doors" type="Node3D" parent="."]
+
+[node name="North" type="Node3D" parent="Doors"]
+
+[node name="DoorMarker" type="Marker3D" parent="Doors/North"]
+position = Vector3(0, 0, -8)
+rotation = Vector3(0, 0, 0)
+metadata/exit_direction = &"north"
+
+[node name="East" type="Node3D" parent="Doors"]
+
+[node name="DoorMarker" type="Marker3D" parent="Doors/East"]
+position = Vector3(8, 0, 0)
+rotation = Vector3(0, -1.57079632679, 0)
+metadata/exit_direction = &"east"
+
+[node name="South" type="Node3D" parent="Doors"]
+
+[node name="DoorMarker" type="Marker3D" parent="Doors/South"]
+position = Vector3(0, 0, 8)
+rotation = Vector3(0, 3.14159265359, 0)
+metadata/exit_direction = &"south"
+
+[node name="West" type="Node3D" parent="Doors"]
+
+[node name="DoorMarker" type="Marker3D" parent="Doors/West"]
+position = Vector3(-8, 0, 0)
+rotation = Vector3(0, 1.57079632679, 0)
+metadata/exit_direction = &"west"
+
+[node name="Loot" type="Node3D" parent="."]
+
+[node name="Point1" type="Marker3D" parent="Loot"]
+position = Vector3(-5.9, 0.15, -4.0)
+
+[node name="Point2" type="Marker3D" parent="Loot"]
+position = Vector3(5.9, 0.15, 4.2)
+
+[node name="LightHousing" type="MeshInstance3D" parent="."]
+position = Vector3(0, 3.87, 0)
+mesh = SubResource("Mesh0")
+
+[node name="LightTube" type="MeshInstance3D" parent="."]
+position = Vector3(0, 3.755, 0)
+mesh = SubResource("Mesh1")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="KeyLamp" type="SpotLight3D" parent="."]
+position = Vector3(0, 3.67, 0)
+rotation = Vector3(-1.5707963, 0, 0)
+light_color = Color(1.0, 0.55, 0.27, 1)
+light_energy = 15.5
+light_volumetric_fog_energy = 0.60
+spot_range = 14.0
+spot_angle = 67.0
+spot_attenuation = 0.75
+shadow_enabled = true
+shadow_bias = 0.048
+shadow_normal_bias = 0.7
+
+[node name="WallLamp0" type="MeshInstance3D" parent="."]
+position = Vector3(-5.25, 3.22, -4.9)
+mesh = SubResource("Mesh2")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="Fill0" type="OmniLight3D" parent="."]
+position = Vector3(-5.25, 3.10, -4.9)
+light_color = Color(1.0, 0.55, 0.27, 1)
+light_energy = 5.1
+light_volumetric_fog_energy = 0.06
+omni_range = 8.4
+omni_attenuation = 1.05
+
+[node name="WallLamp1" type="MeshInstance3D" parent="."]
+position = Vector3(5.25, 3.22, 4.9)
+mesh = SubResource("Mesh2")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="Fill1" type="OmniLight3D" parent="."]
+position = Vector3(5.25, 3.10, 4.9)
+light_color = Color(1.0, 0.55, 0.27, 1)
+light_energy = 5.1
+light_volumetric_fog_energy = 0.06
+omni_range = 8.4
+omni_attenuation = 1.05
+
+[node name="SignPanel" type="MeshInstance3D" parent="."]
+position = Vector3(-4.82, 2.62, -7.67)
+mesh = SubResource("Mesh3")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="SectorSign" type="Label3D" parent="."]
+position = Vector3(-4.82, 2.62, -7.61)
+text = "01 / СБОРКА"
+font_size = 88
+pixel_size = 0.0044
+outline_size = 5
+outline_modulate = Color(0.016, 0.024, 0.033, 1)
+double_sided = false
+modulate = Color(1, 0.83, 0.66, 1)
+cast_shadow = 0
+
+[node name="PressBed" type="StaticBody3D" parent="."]
+position = Vector3(4.53, 0.275, -4.35)
+
+[node name="Collision" type="CollisionShape3D" parent="PressBed"]
+shape = SubResource("Shape0")
+
+[node name="Mesh" type="MeshInstance3D" parent="PressBed"]
+mesh = SubResource("Mesh4")
+metadata/finish = &"rust"
+
+[node name="PressPost0" type="StaticBody3D" parent="."]
+position = Vector3(3.43, 1.5, -4.35)
+
+[node name="Collision" type="CollisionShape3D" parent="PressPost0"]
+shape = SubResource("Shape1")
+
+[node name="Mesh" type="MeshInstance3D" parent="PressPost0"]
+mesh = SubResource("Mesh5")
+metadata/finish = &"panel"
+
+[node name="PressPost1" type="StaticBody3D" parent="."]
+position = Vector3(5.63, 1.5, -4.35)
+
+[node name="Collision" type="CollisionShape3D" parent="PressPost1"]
+shape = SubResource("Shape1")
+
+[node name="Mesh" type="MeshInstance3D" parent="PressPost1"]
+mesh = SubResource("Mesh5")
+metadata/finish = &"panel"
+
+[node name="PressHead" type="StaticBody3D" parent="."]
+position = Vector3(4.53, 2.92, -4.35)
+
+[node name="Collision" type="CollisionShape3D" parent="PressHead"]
+shape = SubResource("Shape2")
+
+[node name="Mesh" type="MeshInstance3D" parent="PressHead"]
+mesh = SubResource("Mesh6")
+metadata/finish = &"rust"
+
+[node name="PressStatus" type="MeshInstance3D" parent="."]
+position = Vector3(4.53, 2.92, -3.22)
+mesh = SubResource("Mesh7")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="ToolCrate" type="StaticBody3D" parent="."]
+position = Vector3(-4.55, 0.575, 4.55)
+
+[node name="Collision" type="CollisionShape3D" parent="ToolCrate"]
+shape = SubResource("Shape3")
+
+[node name="Mesh" type="MeshInstance3D" parent="ToolCrate"]
+mesh = SubResource("Mesh8")
+metadata/finish = &"wood"

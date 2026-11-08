@@ -1,0 +1,41 @@
+; Hand-authored bus layout so the audio sliders in Settings have real buses to drive.
+; Order matters: index 0 is always Master.
+
+[gd_resource type="AudioBusLayout" format=3]
+
+[resource]
+
+bus/0/name = &"Master"
+bus/0/solo = false
+bus/0/mute = false
+bus/0/bypass = false
+bus/1/name = &"Music"
+bus/1/send = &"Master"
+bus/1/solo = false
+bus/1/mute = false
+bus/1/bypass = false
+bus/2/name = &"UI"
+bus/2/send = &"Master"
+bus/2/solo = false
+bus/2/mute = false
+bus/2/bypass = false
+bus/3/name = &"SFX"
+bus/3/send = &"Master"
+bus/3/solo = false
+bus/3/mute = false
+bus/3/bypass = false
+bus/4/name = &"Ambient"
+bus/4/send = &"Master"
+bus/4/solo = false
+bus/4/mute = false
+bus/4/bypass = false
+bus/5/name = &"Voice"
+bus/5/send = &"Master"
+bus/5/solo = false
+bus/5/mute = false
+bus/5/bypass = false
+bus/6/name = &"World"
+bus/6/send = &"Master"
+bus/6/solo = false
+bus/6/mute = false
+bus/6/bypass = false

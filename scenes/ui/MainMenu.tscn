@@ -1,0 +1,618 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/MainMenu.gd" id="1_main_menu"]
+[ext_resource type="PackedScene" path="res://scenes/ui/SettingsMenu.tscn" id="2_settings_menu"]
+[ext_resource type="Script" path="res://scenes/ui/faz_ambience.gd" id="3_ambience"]
+[ext_resource type="Shader" path="res://shaders/menu_fx.gdshader" id="4_menu_fx"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vignette"]
+render_priority = 0
+shader = ExtResource("4_menu_fx")
+shader_parameter/vignette_amount = 0.44
+shader_parameter/tint = Color(0.02, 0.015, 0.02, 1)
+
+[sub_resource type="Environment" id="Environment_menu"]
+background_mode = 1
+background_color = Color(0.012, 0.014, 0.02, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.22, 0.24, 0.32, 1)
+ambient_light_energy = 0.5
+tonemap_mode = 3
+fog_enabled = true
+fog_light_color = Color(0.16, 0.13, 0.12, 1)
+fog_density = 0.03
+fog_height = 0.0
+fog_height_min = 0.0
+fog_sky_affect = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_concrete"]
+albedo_color = Color(0.11, 0.11, 0.13, 1)
+roughness = 0.96
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wall"]
+albedo_color = Color(0.14, 0.12, 0.11, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rust"]
+albedo_color = Color(0.3, 0.14, 0.07, 1)
+roughness = 0.85
+metallic = 0.25
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_suit"]
+albedo_color = Color(0.18, 0.13, 0.08, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eye"]
+albedo_color = Color(0.4, 0.05, 0.03, 1)
+emission_enabled = true
+emission = Color(0.95, 0.22, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bulb"]
+albedo_color = Color(0.7, 0.55, 0.3, 1)
+emission_enabled = true
+emission = Color(1, 0.75, 0.42, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
+size = Vector2(60, 60)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall"]
+size = Vector3(46, 10, 0.6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_side"]
+size = Vector3(0.6, 10, 46)
+
+[sub_resource type="BoxMesh" id="BoxMesh_crate"]
+size = Vector3(1.3, 1.3, 1.3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_table"]
+size = Vector3(2.6, 0.12, 1.6)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_body"]
+top_radius = 0.34
+bottom_radius = 0.44
+height = 1.5
+
+[sub_resource type="SphereMesh" id="SphereMesh_head"]
+radius = 0.3
+height = 0.6
+
+[sub_resource type="SphereMesh" id="SphereMesh_eye"]
+radius = 0.075
+height = 0.15
+
+[node name="MainMenu" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_main_menu")
+
+[node name="World" type="Node3D" parent="."]
+
+[node name="Rig" type="Node3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.62, 7.4)
+
+[node name="MenuCam" type="Camera3D" parent="World/Rig"]
+current = true
+far = 90.0
+fov = 62.0
+
+[node name="Env" type="WorldEnvironment" parent="World"]
+environment = SubResource("Environment_menu")
+
+[node name="Room" type="Node3D" parent="World"]
+
+[node name="Floor" type="MeshInstance3D" parent="World/Room"]
+mesh = SubResource("PlaneMesh_floor")
+surface_material_override/0 = SubResource("StandardMaterial3D_concrete")
+
+[node name="BackWall" type="MeshInstance3D" parent="World/Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -16)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("StandardMaterial3D_wall")
+
+[node name="LeftWall" type="MeshInstance3D" parent="World/Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 5, 2)
+mesh = SubResource("BoxMesh_side")
+surface_material_override/0 = SubResource("StandardMaterial3D_wall")
+
+[node name="RightWall" type="MeshInstance3D" parent="World/Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 5, 2)
+mesh = SubResource("BoxMesh_side")
+surface_material_override/0 = SubResource("StandardMaterial3D_wall")
+
+[node name="Ceiling" type="MeshInstance3D" parent="World/Room"]
+transform = Transform3D(1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 6.2, 2)
+mesh = SubResource("PlaneMesh_floor")
+surface_material_override/0 = SubResource("StandardMaterial3D_wall")
+
+[node name="Crates" type="Node3D" parent="World/Room"]
+
+[node name="Crate1" type="MeshInstance3D" parent="World/Room/Crates"]
+transform = Transform3D(0.94, 0, 0.34, 0, 1, 0, -0.34, 0, 0.94, -4.6, 0.65, -3.2)
+mesh = SubResource("BoxMesh_crate")
+surface_material_override/0 = SubResource("StandardMaterial3D_rust")
+
+[node name="Crate2" type="MeshInstance3D" parent="World/Room/Crates"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 0.65, -4.4)
+mesh = SubResource("BoxMesh_crate")
+surface_material_override/0 = SubResource("StandardMaterial3D_rust")
+
+[node name="Crate3" type="MeshInstance3D" parent="World/Room/Crates"]
+transform = Transform3D(0.8, 0, -0.6, 0, 1, 0, 0.6, 0, 0.8, 4.9, 0.65, -2.1)
+mesh = SubResource("BoxMesh_crate")
+surface_material_override/0 = SubResource("StandardMaterial3D_rust")
+
+[node name="Crate4" type="MeshInstance3D" parent="World/Room/Crates"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2, 1.95, -2.6)
+mesh = SubResource("BoxMesh_crate")
+surface_material_override/0 = SubResource("StandardMaterial3D_rust")
+
+[node name="Table" type="MeshInstance3D" parent="World/Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 0.78, -7.6)
+mesh = SubResource("BoxMesh_table")
+surface_material_override/0 = SubResource("StandardMaterial3D_rust")
+
+[node name="Figure" type="Node3D" parent="World/Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3, 0, -9.6)
+
+[node name="Body" type="MeshInstance3D" parent="World/Room/Figure"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
+mesh = SubResource("CylinderMesh_body")
+surface_material_override/0 = SubResource("StandardMaterial3D_suit")
+
+[node name="Head" type="MeshInstance3D" parent="World/Room/Figure"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, 0)
+mesh = SubResource("SphereMesh_head")
+surface_material_override/0 = SubResource("StandardMaterial3D_suit")
+
+[node name="EyeL" type="MeshInstance3D" parent="World/Room/Figure/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.11, 0.04, -0.26)
+mesh = SubResource("SphereMesh_eye")
+surface_material_override/0 = SubResource("StandardMaterial3D_eye")
+
+[node name="EyeR" type="MeshInstance3D" parent="World/Room/Figure/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11, 0.04, -0.26)
+mesh = SubResource("SphereMesh_eye")
+surface_material_override/0 = SubResource("StandardMaterial3D_eye")
+
+[node name="Lamp" type="OmniLight3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 4.6, -2.4)
+light_color = Color(1, 0.78, 0.52, 1)
+light_energy = 8.0
+shadow_enabled = true
+omni_range = 22.0
+omni_attenuation = 1.35
+
+[node name="Bulb" type="MeshInstance3D" parent="World/Lamp"]
+mesh = SubResource("SphereMesh_eye")
+surface_material_override/0 = SubResource("StandardMaterial3D_bulb")
+
+[node name="Rim" type="OmniLight3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3, 2.6, -11.5)
+light_color = Color(0.85, 0.16, 0.1, 1)
+light_energy = 8.0
+omni_range = 12.0
+omni_attenuation = 1.6
+
+[node name="Desk" type="OmniLight3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 1.9, -6.4)
+light_color = Color(0.55, 0.72, 1, 1)
+light_energy = 2.5
+omni_range = 7.0
+omni_attenuation = 1.8
+
+[node name="Moon" type="DirectionalLight3D" parent="World"]
+transform = Transform3D(0.9, -0.2, 0.38, 0, 0.88, 0.47, -0.43, -0.42, 0.8, 0, 9, 0)
+light_color = Color(0.55, 0.65, 0.9, 1)
+light_energy = 0.35
+
+[node name="Dust" type="CPUParticles3D" parent="World"]
+amount = 260
+lifetime = 16.0
+preprocess = 6.0
+visibility_aabb = AABB(-16, -1, -18, 32, 8, 36)
+direction = Vector3(0, 0, 0)
+spread = 180.0
+gravity = Vector3(0, -0.015, 0)
+initial_velocity_min = 0.004
+initial_velocity_max = 0.02
+scale_min = 0.03
+scale_max = 0.07
+
+[node name="Backdrop" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0.3)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.03, 0.025, 0.035, 1)
+
+[node name="Background" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0.2)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.05, 0.015, 0.02, 1)
+
+[node name="Vignette" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_vignette")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MenuMusic" type="AudioStreamPlayer" parent="."]
+bus = &"Music"
+
+[node name="Ambience" type="AudioStreamPlayer" parent="."]
+script = ExtResource("3_ambience")
+
+[node name="Title" type="Label" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 56.0
+offset_top = 30.0
+offset_right = -56.0
+offset_bottom = 96.0
+theme_override_colors/font_outline_color = Color(0.55, 0.08, 0.06, 0.85)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 50
+text = "FAZ DEVIL CORP"
+
+[node name="SubTitle" type="Label" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 58.0
+offset_top = 92.0
+offset_right = -56.0
+offset_bottom = 122.0
+theme_override_colors/font_color = Color(0.95, 0.57, 0.51, 1)
+theme_override_font_sizes/font_size = 18
+text = "ночная смена   |   ты не сотрудник, ты подрядчик"
+
+[node name="MenuBox" type="VBoxContainer" parent="."]
+offset_left = 56.0
+offset_top = 210.0
+offset_right = 436.0
+offset_bottom = 560.0
+theme_override_constants/separation = 12
+
+[node name="Header" type="Label" parent="MenuBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.48, 0.46, 1)
+theme_override_font_sizes/font_size = 13
+text = "ГЛАВНОЕ МЕНЮ"
+
+[node name="HostButton" type="Button" parent="MenuBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "СОЗДАТЬ ИГРУ"
+
+[node name="JoinGameButton" type="Button" parent="MenuBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "ПОДКЛЮЧИТЬСЯ"
+
+[node name="SettingsButton" type="Button" parent="MenuBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "НАСТРОЙКИ"
+
+[node name="HelpButton" type="Button" parent="MenuBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "КАК ИГРАТЬ"
+
+[node name="ExitButton" type="Button" parent="MenuBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "ВЫХОД"
+
+[node name="Ticker" type="Label" parent="."]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 56.0
+offset_top = -52.0
+offset_right = -40.0
+offset_bottom = -26.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.34, 0.32, 0.32, 1)
+theme_override_font_sizes/font_size = 13
+text = ""
+
+[node name="InfoLabel" type="Label" parent="."]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 56.0
+offset_top = -26.0
+offset_right = -40.0
+offset_bottom = -2.0
+grow_vertical = 0
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 13
+text = "Steam: проверяется"
+
+[node name="NetMenu" type="CanvasLayer" parent="."]
+layer = 8
+visible = false
+
+[node name="Root" type="Control" parent="NetMenu"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Dim" type="ColorRect" parent="NetMenu/Root"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.62)
+
+[node name="Panel" type="PanelContainer" parent="NetMenu/Root"]
+offset_left = 56.0
+offset_top = 150.0
+offset_right = 456.0
+offset_bottom = 590.0
+
+[node name="Margin" type="MarginContainer" parent="NetMenu/Root/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 18
+
+[node name="Column" type="VBoxContainer" parent="NetMenu/Root/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="NetMenu/Root/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.3, 0.22, 1)
+theme_override_font_sizes/font_size = 24
+text = "ИГРА ПО СЕТИ"
+
+[node name="HostSteamButton" type="Button" parent="NetMenu/Root/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "СОЗДАТЬ ИГРУ (STEAM-ЛОББИ)"
+
+[node name="PublicLobby" type="CheckButton" parent="NetMenu/Root/Panel/Margin/Column"]
+layout_mode = 2
+button_pressed = true
+text = "Открытая (видно в Поиске)"
+
+[node name="FindButton" type="Button" parent="NetMenu/Root/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "НАЙТИ ЛОББИ"
+
+[node name="NetHint" type="Label" parent="NetMenu/Root/Panel/Margin/Column"]
+custom_minimum_size = Vector2(330, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.46, 0.44, 0.44, 1)
+theme_override_font_sizes/font_size = 13
+text = "Парам проще всего: ты создаёшь лобби, друг открывает «Найти лобби» -> «Друзья» и заходит."
+autowrap_mode = 3
+
+[node name="NetStatus" type="Label" parent="NetMenu/Root/Panel/Margin/Column"]
+custom_minimum_size = Vector2(330, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.72, 0.55, 1)
+theme_override_font_sizes/font_size = 14
+text = ""
+autowrap_mode = 3
+
+[node name="BackButton" type="Button" parent="NetMenu/Root/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "← НАЗАД"
+
+[node name="SaveSlots" type="PanelContainer" parent="NetMenu/Root"]
+visible = false
+anchor_right = 1.0
+offset_left = 476.0
+offset_top = 150.0
+offset_right = -40.0
+offset_bottom = 450.0
+
+[node name="Margin" type="MarginContainer" parent="NetMenu/Root/SaveSlots"]
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 18
+
+[node name="Slots" type="VBoxContainer" parent="NetMenu/Root/SaveSlots/Margin"]
+theme_override_constants/separation = 10
+
+[node name="Heading" type="Label" parent="NetMenu/Root/SaveSlots/Margin/Slots"]
+text = "АРХИВ КАМПАНИЙ / ВЫБЕРИТЕ СЛОТ"
+theme_override_font_sizes/font_size = 21
+
+[node name="Slot1" type="Button" parent="NetMenu/Root/SaveSlots/Margin/Slots"]
+custom_minimum_size = Vector2(0, 58)
+text = "СЛОТ 1"
+
+[node name="Slot2" type="Button" parent="NetMenu/Root/SaveSlots/Margin/Slots"]
+custom_minimum_size = Vector2(0, 58)
+text = "СЛОТ 2"
+
+[node name="Slot3" type="Button" parent="NetMenu/Root/SaveSlots/Margin/Slots"]
+custom_minimum_size = Vector2(0, 58)
+text = "СЛОТ 3"
+
+[node name="DeleteSlotButton" type="Button" parent="NetMenu/Root/SaveSlots/Margin/Slots"]
+text = "УДАЛИТЬ СОХРАНЕНИЕ"
+
+[node name="DeleteConfirm" type="ConfirmationDialog" parent="."]
+title = "Удаление сохранения"
+ok_button_text = "Удалить"
+cancel_button_text = "Отмена"
+
+[node name="SidePanel" type="PanelContainer" parent="NetMenu/Root"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 476.0
+offset_top = 150.0
+offset_right = -40.0
+offset_bottom = -210.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="NetMenu/Root/SidePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
+
+[node name="Column" type="VBoxContainer" parent="NetMenu/Root/SidePanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HeaderRow" type="HBoxContainer" parent="NetMenu/Root/SidePanel/Margin/Column"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="Label" parent="NetMenu/Root/SidePanel/Margin/Column/HeaderRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.24, 0.18, 1)
+theme_override_font_sizes/font_size = 15
+text = "ЛОББИ"
+
+[node name="Spacer" type="Control" parent="NetMenu/Root/SidePanel/Margin/Column/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelCloseX" type="Button" parent="NetMenu/Root/SidePanel/Margin/Column/HeaderRow"]
+custom_minimum_size = Vector2(44, 0)
+layout_mode = 2
+tooltip_text = "Закрыть список"
+theme_override_colors/font_color = Color(0.86, 0.36, 0.28, 1)
+theme_override_font_sizes/font_size = 18
+text = "×"
+
+[node name="List" type="ItemList" parent="NetMenu/Root/SidePanel/Margin/Column"]
+layout_mode = 2
+size_flags_vertical = 3
+allow_reselect = true
+
+[node name="Row" type="HBoxContainer" parent="NetMenu/Root/SidePanel/Margin/Column"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RefreshButton" type="Button" parent="NetMenu/Root/SidePanel/Margin/Column/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Обновить"
+
+[node name="SourceButton" type="Button" parent="NetMenu/Root/SidePanel/Margin/Column/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Друзья"
+
+[node name="JoinButton" type="Button" parent="NetMenu/Root/SidePanel/Margin/Column/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Войти"
+
+[node name="InviteButton" type="Button" parent="NetMenu/Root/SidePanel/Margin/Column/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Пригласить"
+
+[node name="Help" type="CanvasLayer" parent="."]
+layer = 9
+visible = false
+
+[node name="Root" type="Control" parent="Help"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+
+[node name="Dim" type="ColorRect" parent="Help/Root"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.78)
+
+[node name="Center" type="CenterContainer" parent="Help/Root"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Help/Root/Center"]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Help/Root/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 18
+
+[node name="Column" type="VBoxContainer" parent="Help/Root/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Help/Root/Center/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.3, 0.22, 1)
+theme_override_font_sizes/font_size = 24
+text = "КАК ИГРАТЬ ВДВОЁМ"
+
+[node name="Way1" type="Label" parent="Help/Root/Center/Panel/Margin/Column"]
+custom_minimum_size = Vector2(640, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "1. Steam (лучший способ). Ты жмёшь «Создать игру» и выбираешь слот. У друга: «Подключиться» -> «Найти лобби» -> «Друзья» -> выбрать тебя -> «Войти». Никаких IP и настроек роутера."
+autowrap_mode = 3
+
+[node name="Way2" type="Label" parent="Help/Root/Center/Panel/Margin/Column"]
+custom_minimum_size = Vector2(640, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "2. Пригласить: хост открывает «Найти лобби» -> «Друзья», выбирает друга со статусом «онлайн» и жмёт «ПРИГЛАСИТЬ». Затем выбирает слот кампании. Другу надо уже сидеть в игре: приглашение приходит ей, и он жмёт «Войти». Оверлей Steam (Shift+Tab) доступен только при запуске из Steam."
+autowrap_mode = 3
+
+[node name="Rules" type="Label" parent="Help/Root/Center/Panel/Margin/Column"]
+custom_minimum_size = Vector2(640, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.52, 0.5, 0.5, 1)
+theme_override_font_sizes/font_size = 13
+text = "Хост создал лобби - друг заходит через «Найти лобби» -> «Друзья» -> «Войти», и карта грузится у обоих. Пауза в игре локальная: мир не останавливается, напарники продолжают слышать шаги. Выйти из игры можно через Esc -> «ВЫЙТИ ИЗ ИГРЫ»."
+autowrap_mode = 3
+
+[node name="CloseHelp" type="Button" parent="Help/Root/Center/Panel/Margin/Column"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "ПОНЯТНО"
+
+[node name="Settings" parent="." instance=ExtResource("2_settings_menu")]

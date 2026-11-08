@@ -1,0 +1,57 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/world/InteractiveProp.gd" id="1_prop"]
+[ext_resource type="PackedScene" path="res://scenes/world/daytime/CozyChair.tscn" id="5_CozyChair"]
+[ext_resource type="PackedScene" path="res://scenes/world/daytime/PartyArcade.tscn" id="6_PartyArcade"]
+[ext_resource type="PackedScene" path="res://scenes/world/daytime/PartyNeon.tscn" id="7_PartyNeon"]
+[ext_resource type="PackedScene" path="res://scenes/world/daytime/StageCooling.tscn" id="8_StageCooling"]
+
+[node name="DaytimeProps" type="Node3D"]
+
+[node name="Table1" type="Node3D" parent="."]
+position = Vector3(-3.4, 0, -4.65)
+script = ExtResource("1_prop")
+prop_id = 1
+display_name = "Стол 1"
+revenue_generation = 8
+approach_offset = Vector3(-1.65, 0, 0)
+interaction_offset = Vector3(0, 0.91, 0)
+
+[node name="Table2" type="Node3D" parent="."]
+position = Vector3(-3.4, 0, 0.65)
+script = ExtResource("1_prop")
+prop_id = 2
+display_name = "Стол 2"
+revenue_generation = 8
+approach_offset = Vector3(-1.65, 0, 0)
+interaction_offset = Vector3(0, 0.91, 0)
+
+[node name="Table3" type="Node3D" parent="."]
+position = Vector3(2.2, 0, -4.65)
+script = ExtResource("1_prop")
+prop_id = 3
+display_name = "Стол 3"
+revenue_generation = 8
+approach_offset = Vector3(-1.49, 0, 0)
+interaction_offset = Vector3(0, 0.91, 0)
+
+[node name="Table4" type="Node3D" parent="."]
+position = Vector3(2.2, 0, 0.65)
+script = ExtResource("1_prop")
+prop_id = 4
+display_name = "Стол 4"
+revenue_generation = 8
+approach_offset = Vector3(-1.49, 0, 0)
+interaction_offset = Vector3(0, 0.91, 0)
+
+[node name="CozyChair" parent="." instance=ExtResource("5_CozyChair")]
+position = Vector3(5.55, 0, -6.7)
+
+[node name="PartyArcade" parent="." instance=ExtResource("6_PartyArcade")]
+position = Vector3(-9.15, 0, -5.55)
+
+[node name="PartyNeon" parent="." instance=ExtResource("7_PartyNeon")]
+position = Vector3(-8.95, 2.47, -8.86)
+
+[node name="StageCooling" parent="." instance=ExtResource("8_StageCooling")]
+position = Vector3(-0.75, 0.52, -11.1)

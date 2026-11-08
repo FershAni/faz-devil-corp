@@ -1,0 +1,56 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/world/InteractiveProp.gd" id="1_prop"]
+
+[sub_resource type="StandardMaterial3D" id="Material_body"]
+albedo_color = Color(0.22, 0.24, 0.28, 1)
+
+[sub_resource type="BoxMesh" id="Box_body"]
+material = SubResource("Material_body")
+size = Vector3(0.45, 0.94, 0.42)
+
+[sub_resource type="StandardMaterial3D" id="Material_accent"]
+albedo_color = Color(0.24, 0.86, 0.57, 1)
+
+[sub_resource type="BoxMesh" id="Box_accent"]
+material = SubResource("Material_accent")
+size = Vector3(0.27, 0.17, 0.11)
+
+[sub_resource type="BoxShape3D" id="Shape_body"]
+size = Vector3(0.45, 0.94, 0.42)
+
+[node name="StageCooling" type="Node3D" node_paths=PackedStringArray("status_light")]
+script = ExtResource("1_prop")
+prop_id = 8
+display_name = "Шоу аниматроника"
+kind = 3
+price = 130
+cozy_value = 50
+revenue_generation = 0
+maintenance_penalty = 35
+approach_offset = Vector3(0, 0, 0)
+interaction_offset = Vector3(0, 0.50, 2.27)
+status_light = NodePath("Accent")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.05, 1.94)
+mesh = SubResource("Box_body")
+
+[node name="Accent" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.39, 2.16)
+mesh = SubResource("Box_accent")
+
+[node name="Collision" type="StaticBody3D" parent="."]
+process_mode = 4
+collision_mask = 0
+
+[node name="Shape" type="CollisionShape3D" parent="Collision"]
+position = Vector3(0, -0.05, 1.94)
+shape = SubResource("Shape_body")
+
+[node name="Sign" type="Label3D" parent="."]
+position = Vector3(0, 0.64, 2.21)
+text = "ОХЛАЖДЕНИЕ [E]"
+font_size = 40
+pixel_size = 0.002
+modulate = Color(1, 0.7, 0.37, 1)

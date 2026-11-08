@@ -1,0 +1,368 @@
+[gd_scene load_steps=19 format=3]
+
+
+[sub_resource type="StandardMaterial3D" id="concrete"]
+albedo_color = Color(0.28, 0.28, 0.27, 1.0)
+texture_filter = 0
+
+[sub_resource type="BoxMesh" id="Mesh0"]
+material = SubResource("concrete")
+size = Vector3(16, 0.25, 16)
+
+[sub_resource type="BoxShape3D" id="Shape0"]
+size = Vector3(16, 0.25, 16)
+
+[sub_resource type="StandardMaterial3D" id="panel"]
+albedo_color = Color(0.22, 0.25, 0.25, 1.0)
+texture_filter = 0
+
+[sub_resource type="BoxMesh" id="Mesh1"]
+material = SubResource("panel")
+size = Vector3(16, 0.22, 16)
+
+[sub_resource type="BoxShape3D" id="Shape1"]
+size = Vector3(16, 0.22, 16)
+
+[sub_resource type="StandardMaterial3D" id="grime"]
+albedo_color = Color(0.34, 0.35, 0.34, 1.0)
+texture_filter = 0
+
+[sub_resource type="BoxMesh" id="Mesh2"]
+material = SubResource("grime")
+size = Vector3(6.08, 4, 0.26)
+
+[sub_resource type="BoxShape3D" id="Shape2"]
+size = Vector3(6.08, 4, 0.26)
+
+[sub_resource type="BoxMesh" id="Mesh3"]
+material = SubResource("panel")
+size = Vector3(6.08, 0.44, 0.04)
+
+[sub_resource type="StandardMaterial3D" id="rust"]
+albedo_color = Color(0.36, 0.21, 0.15, 1.0)
+texture_filter = 0
+
+[sub_resource type="BoxMesh" id="Mesh4"]
+material = SubResource("rust")
+size = Vector3(0.16, 2.55, 0.32)
+
+[sub_resource type="BoxMesh" id="Mesh5"]
+material = SubResource("panel")
+size = Vector3(3.44, 1.45, 0.26)
+
+[sub_resource type="BoxShape3D" id="Shape3"]
+size = Vector3(3.44, 1.45, 0.26)
+
+[sub_resource type="StandardMaterial3D" id="black"]
+albedo_color = Color(0.085, 0.09, 0.084, 1.0)
+texture_filter = 0
+
+[sub_resource type="BoxMesh" id="Mesh6"]
+material = SubResource("black")
+size = Vector3(3.05, 0.025, 0.42)
+
+[sub_resource type="StandardMaterial3D" id="hazard"]
+albedo_color = Color(0.69, 0.43, 0.085, 1.0)
+texture_filter = 0
+
+[sub_resource type="BoxMesh" id="Mesh7"]
+material = SubResource("hazard")
+size = Vector3(2.82, 0.14, 0.045)
+
+[node name="RoomShell" type="Node3D"]
+
+[node name="Floor" type="StaticBody3D" parent="."]
+position = Vector3(0, -0.125, 0)
+
+[node name="Collision" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("Shape0")
+
+[node name="Mesh" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("Mesh0")
+metadata/finish = &"concrete"
+
+[node name="Ceiling" type="StaticBody3D" parent="."]
+position = Vector3(0, 4.11, 0)
+
+[node name="Collision" type="CollisionShape3D" parent="Ceiling"]
+shape = SubResource("Shape1")
+
+[node name="Mesh" type="MeshInstance3D" parent="Ceiling"]
+mesh = SubResource("Mesh1")
+metadata/finish = &"panel"
+
+[node name="North" type="Node3D" parent="."]
+rotation = Vector3(0, 0, 0)
+
+[node name="Left" type="StaticBody3D" parent="North"]
+position = Vector3(-4.76, 2, -7.87)
+
+[node name="Collision" type="CollisionShape3D" parent="North/Left"]
+shape = SubResource("Shape2")
+
+[node name="Mesh" type="MeshInstance3D" parent="North/Left"]
+mesh = SubResource("Mesh2")
+metadata/finish = &"grime"
+
+[node name="LeftKickPlate" type="MeshInstance3D" parent="North"]
+position = Vector3(-4.76, 0.25, -7.72)
+mesh = SubResource("Mesh3")
+metadata/finish = &"panel"
+cast_shadow = 0
+gi_mode = 0
+
+[node name="LeftDoorJamb" type="MeshInstance3D" parent="North"]
+position = Vector3(-1.67, 1.275, -7.81)
+mesh = SubResource("Mesh4")
+metadata/finish = &"rust"
+
+[node name="Right" type="StaticBody3D" parent="North"]
+position = Vector3(4.76, 2, -7.87)
+
+[node name="Collision" type="CollisionShape3D" parent="North/Right"]
+shape = SubResource("Shape2")
+
+[node name="Mesh" type="MeshInstance3D" parent="North/Right"]
+mesh = SubResource("Mesh2")
+metadata/finish = &"grime"
+
+[node name="RightKickPlate" type="MeshInstance3D" parent="North"]
+position = Vector3(4.76, 0.25, -7.72)
+mesh = SubResource("Mesh3")
+metadata/finish = &"panel"
+cast_shadow = 0
+gi_mode = 0
+
+[node name="RightDoorJamb" type="MeshInstance3D" parent="North"]
+position = Vector3(1.67, 1.275, -7.81)
+mesh = SubResource("Mesh4")
+metadata/finish = &"rust"
+
+[node name="Lintel" type="StaticBody3D" parent="North"]
+position = Vector3(0, 3.275, -7.87)
+
+[node name="Collision" type="CollisionShape3D" parent="North/Lintel"]
+shape = SubResource("Shape3")
+
+[node name="Mesh" type="MeshInstance3D" parent="North/Lintel"]
+mesh = SubResource("Mesh5")
+metadata/finish = &"panel"
+
+[node name="Threshold" type="MeshInstance3D" parent="North"]
+position = Vector3(0, 0.0125, -7.75)
+mesh = SubResource("Mesh6")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="DoorWarning" type="MeshInstance3D" parent="North"]
+position = Vector3(0, 2.72, -7.71)
+mesh = SubResource("Mesh7")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="East" type="Node3D" parent="."]
+rotation = Vector3(0, -1.57079632679, 0)
+
+[node name="Left" type="StaticBody3D" parent="East"]
+position = Vector3(-4.76, 2, -7.87)
+
+[node name="Collision" type="CollisionShape3D" parent="East/Left"]
+shape = SubResource("Shape2")
+
+[node name="Mesh" type="MeshInstance3D" parent="East/Left"]
+mesh = SubResource("Mesh2")
+metadata/finish = &"grime"
+
+[node name="LeftKickPlate" type="MeshInstance3D" parent="East"]
+position = Vector3(-4.76, 0.25, -7.72)
+mesh = SubResource("Mesh3")
+metadata/finish = &"panel"
+cast_shadow = 0
+gi_mode = 0
+
+[node name="LeftDoorJamb" type="MeshInstance3D" parent="East"]
+position = Vector3(-1.67, 1.275, -7.81)
+mesh = SubResource("Mesh4")
+metadata/finish = &"rust"
+
+[node name="Right" type="StaticBody3D" parent="East"]
+position = Vector3(4.76, 2, -7.87)
+
+[node name="Collision" type="CollisionShape3D" parent="East/Right"]
+shape = SubResource("Shape2")
+
+[node name="Mesh" type="MeshInstance3D" parent="East/Right"]
+mesh = SubResource("Mesh2")
+metadata/finish = &"grime"
+
+[node name="RightKickPlate" type="MeshInstance3D" parent="East"]
+position = Vector3(4.76, 0.25, -7.72)
+mesh = SubResource("Mesh3")
+metadata/finish = &"panel"
+cast_shadow = 0
+gi_mode = 0
+
+[node name="RightDoorJamb" type="MeshInstance3D" parent="East"]
+position = Vector3(1.67, 1.275, -7.81)
+mesh = SubResource("Mesh4")
+metadata/finish = &"rust"
+
+[node name="Lintel" type="StaticBody3D" parent="East"]
+position = Vector3(0, 3.275, -7.87)
+
+[node name="Collision" type="CollisionShape3D" parent="East/Lintel"]
+shape = SubResource("Shape3")
+
+[node name="Mesh" type="MeshInstance3D" parent="East/Lintel"]
+mesh = SubResource("Mesh5")
+metadata/finish = &"panel"
+
+[node name="Threshold" type="MeshInstance3D" parent="East"]
+position = Vector3(0, 0.0125, -7.75)
+mesh = SubResource("Mesh6")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="DoorWarning" type="MeshInstance3D" parent="East"]
+position = Vector3(0, 2.72, -7.71)
+mesh = SubResource("Mesh7")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="South" type="Node3D" parent="."]
+rotation = Vector3(0, 3.14159265359, 0)
+
+[node name="Left" type="StaticBody3D" parent="South"]
+position = Vector3(-4.76, 2, -7.87)
+
+[node name="Collision" type="CollisionShape3D" parent="South/Left"]
+shape = SubResource("Shape2")
+
+[node name="Mesh" type="MeshInstance3D" parent="South/Left"]
+mesh = SubResource("Mesh2")
+metadata/finish = &"grime"
+
+[node name="LeftKickPlate" type="MeshInstance3D" parent="South"]
+position = Vector3(-4.76, 0.25, -7.72)
+mesh = SubResource("Mesh3")
+metadata/finish = &"panel"
+cast_shadow = 0
+gi_mode = 0
+
+[node name="LeftDoorJamb" type="MeshInstance3D" parent="South"]
+position = Vector3(-1.67, 1.275, -7.81)
+mesh = SubResource("Mesh4")
+metadata/finish = &"rust"
+
+[node name="Right" type="StaticBody3D" parent="South"]
+position = Vector3(4.76, 2, -7.87)
+
+[node name="Collision" type="CollisionShape3D" parent="South/Right"]
+shape = SubResource("Shape2")
+
+[node name="Mesh" type="MeshInstance3D" parent="South/Right"]
+mesh = SubResource("Mesh2")
+metadata/finish = &"grime"
+
+[node name="RightKickPlate" type="MeshInstance3D" parent="South"]
+position = Vector3(4.76, 0.25, -7.72)
+mesh = SubResource("Mesh3")
+metadata/finish = &"panel"
+cast_shadow = 0
+gi_mode = 0
+
+[node name="RightDoorJamb" type="MeshInstance3D" parent="South"]
+position = Vector3(1.67, 1.275, -7.81)
+mesh = SubResource("Mesh4")
+metadata/finish = &"rust"
+
+[node name="Lintel" type="StaticBody3D" parent="South"]
+position = Vector3(0, 3.275, -7.87)
+
+[node name="Collision" type="CollisionShape3D" parent="South/Lintel"]
+shape = SubResource("Shape3")
+
+[node name="Mesh" type="MeshInstance3D" parent="South/Lintel"]
+mesh = SubResource("Mesh5")
+metadata/finish = &"panel"
+
+[node name="Threshold" type="MeshInstance3D" parent="South"]
+position = Vector3(0, 0.0125, -7.75)
+mesh = SubResource("Mesh6")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="DoorWarning" type="MeshInstance3D" parent="South"]
+position = Vector3(0, 2.72, -7.71)
+mesh = SubResource("Mesh7")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="West" type="Node3D" parent="."]
+rotation = Vector3(0, 1.57079632679, 0)
+
+[node name="Left" type="StaticBody3D" parent="West"]
+position = Vector3(-4.76, 2, -7.87)
+
+[node name="Collision" type="CollisionShape3D" parent="West/Left"]
+shape = SubResource("Shape2")
+
+[node name="Mesh" type="MeshInstance3D" parent="West/Left"]
+mesh = SubResource("Mesh2")
+metadata/finish = &"grime"
+
+[node name="LeftKickPlate" type="MeshInstance3D" parent="West"]
+position = Vector3(-4.76, 0.25, -7.72)
+mesh = SubResource("Mesh3")
+metadata/finish = &"panel"
+cast_shadow = 0
+gi_mode = 0
+
+[node name="LeftDoorJamb" type="MeshInstance3D" parent="West"]
+position = Vector3(-1.67, 1.275, -7.81)
+mesh = SubResource("Mesh4")
+metadata/finish = &"rust"
+
+[node name="Right" type="StaticBody3D" parent="West"]
+position = Vector3(4.76, 2, -7.87)
+
+[node name="Collision" type="CollisionShape3D" parent="West/Right"]
+shape = SubResource("Shape2")
+
+[node name="Mesh" type="MeshInstance3D" parent="West/Right"]
+mesh = SubResource("Mesh2")
+metadata/finish = &"grime"
+
+[node name="RightKickPlate" type="MeshInstance3D" parent="West"]
+position = Vector3(4.76, 0.25, -7.72)
+mesh = SubResource("Mesh3")
+metadata/finish = &"panel"
+cast_shadow = 0
+gi_mode = 0
+
+[node name="RightDoorJamb" type="MeshInstance3D" parent="West"]
+position = Vector3(1.67, 1.275, -7.81)
+mesh = SubResource("Mesh4")
+metadata/finish = &"rust"
+
+[node name="Lintel" type="StaticBody3D" parent="West"]
+position = Vector3(0, 3.275, -7.87)
+
+[node name="Collision" type="CollisionShape3D" parent="West/Lintel"]
+shape = SubResource("Shape3")
+
+[node name="Mesh" type="MeshInstance3D" parent="West/Lintel"]
+mesh = SubResource("Mesh5")
+metadata/finish = &"panel"
+
+[node name="Threshold" type="MeshInstance3D" parent="West"]
+position = Vector3(0, 0.0125, -7.75)
+mesh = SubResource("Mesh6")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="DoorWarning" type="MeshInstance3D" parent="West"]
+position = Vector3(0, 2.72, -7.71)
+mesh = SubResource("Mesh7")
+cast_shadow = 0
+gi_mode = 0

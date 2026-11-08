@@ -1,0 +1,231 @@
+[gd_scene load_steps=17 format=3]
+
+[ext_resource type="Script" path="res://scenes/world/rooms/dungeon_room.gd" id="room"]
+[ext_resource type="PackedScene" path="res://scenes/world/rooms/RoomShell.tscn" id="shell"]
+
+[sub_resource type="StandardMaterial3D" id="black"]
+albedo_color = Color(0.042, 0.059, 0.075, 1.0)
+
+[sub_resource type="BoxMesh" id="Mesh0"]
+material = SubResource("black")
+size = Vector3(3.2, 0.18, 0.48)
+
+[sub_resource type="StandardMaterial3D" id="green"]
+albedo_color = Color(0.31, 0.9, 0.64, 1.0)
+shading_mode = 0
+emission_enabled = true
+emission = Color(0.31, 0.9, 0.64, 1.0)
+emission_energy_multiplier = 1.15
+
+[sub_resource type="BoxMesh" id="Mesh1"]
+material = SubResource("green")
+size = Vector3(2.85, 0.07, 0.24)
+
+[sub_resource type="BoxMesh" id="Mesh2"]
+material = SubResource("green")
+size = Vector3(0.36, 0.13, 0.21)
+
+[sub_resource type="BoxMesh" id="Mesh3"]
+material = SubResource("black")
+size = Vector3(4.25, 0.62, 0.08)
+
+[sub_resource type="StandardMaterial3D" id="water"]
+albedo_color = Color(0.08, 0.24, 0.18, 0.37)
+transparency = 1
+cull_mode = 2
+
+[sub_resource type="BoxMesh" id="Mesh4"]
+material = SubResource("water")
+size = Vector3(15.46, 0.027, 15.46)
+
+[sub_resource type="StandardMaterial3D" id="rust"]
+albedo_color = Color(0.36, 0.21, 0.15, 1.0)
+
+[sub_resource type="BoxMesh" id="Mesh5"]
+material = SubResource("rust")
+size = Vector3(13.6, 0.31, 0.31)
+
+[sub_resource type="StandardMaterial3D" id="panel"]
+albedo_color = Color(0.22, 0.25, 0.25, 1.0)
+
+[sub_resource type="BoxMesh" id="Mesh6"]
+material = SubResource("panel")
+size = Vector3(1.1, 1.76, 2.25)
+
+[sub_resource type="BoxShape3D" id="Shape0"]
+size = Vector3(1.1, 1.76, 2.25)
+
+[sub_resource type="BoxMesh" id="Mesh7"]
+material = SubResource("green")
+size = Vector3(0.35, 0.16, 0.06)
+
+[node name="FloodedRoom" type="Node3D"]
+script = ExtResource("room")
+room_kind = 1
+sector_name = "НАСОСНАЯ"
+
+[node name="Shell" parent="." instance=ExtResource("shell")]
+
+[node name="Doors" type="Node3D" parent="."]
+
+[node name="North" type="Node3D" parent="Doors"]
+
+[node name="DoorMarker" type="Marker3D" parent="Doors/North"]
+position = Vector3(0, 0, -8)
+rotation = Vector3(0, 0, 0)
+metadata/exit_direction = &"north"
+
+[node name="East" type="Node3D" parent="Doors"]
+
+[node name="DoorMarker" type="Marker3D" parent="Doors/East"]
+position = Vector3(8, 0, 0)
+rotation = Vector3(0, -1.57079632679, 0)
+metadata/exit_direction = &"east"
+
+[node name="South" type="Node3D" parent="Doors"]
+
+[node name="DoorMarker" type="Marker3D" parent="Doors/South"]
+position = Vector3(0, 0, 8)
+rotation = Vector3(0, 3.14159265359, 0)
+metadata/exit_direction = &"south"
+
+[node name="West" type="Node3D" parent="Doors"]
+
+[node name="DoorMarker" type="Marker3D" parent="Doors/West"]
+position = Vector3(-8, 0, 0)
+rotation = Vector3(0, 1.57079632679, 0)
+metadata/exit_direction = &"west"
+
+[node name="Loot" type="Node3D" parent="."]
+
+[node name="Point1" type="Marker3D" parent="Loot"]
+position = Vector3(-5.9, 0.15, -4.0)
+
+[node name="Point2" type="Marker3D" parent="Loot"]
+position = Vector3(5.9, 0.15, 4.2)
+
+[node name="LightHousing" type="MeshInstance3D" parent="."]
+position = Vector3(0, 3.87, 0)
+mesh = SubResource("Mesh0")
+
+[node name="LightTube" type="MeshInstance3D" parent="."]
+position = Vector3(0, 3.755, 0)
+mesh = SubResource("Mesh1")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="KeyLamp" type="SpotLight3D" parent="."]
+position = Vector3(0, 3.67, 0)
+rotation = Vector3(-1.5707963, 0, 0)
+light_color = Color(0.5, 0.91, 0.72, 1)
+light_energy = 14.8
+light_volumetric_fog_energy = 0.60
+spot_range = 14.0
+spot_angle = 67.0
+spot_attenuation = 0.75
+shadow_enabled = true
+shadow_bias = 0.048
+shadow_normal_bias = 0.7
+
+[node name="WallLamp0" type="MeshInstance3D" parent="."]
+position = Vector3(-5.25, 3.22, -4.9)
+mesh = SubResource("Mesh2")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="Fill0" type="OmniLight3D" parent="."]
+position = Vector3(-5.25, 3.10, -4.9)
+light_color = Color(0.5, 0.91, 0.72, 1)
+light_energy = 5.1
+light_volumetric_fog_energy = 0.06
+omni_range = 8.4
+omni_attenuation = 1.05
+
+[node name="WallLamp1" type="MeshInstance3D" parent="."]
+position = Vector3(5.25, 3.22, 4.9)
+mesh = SubResource("Mesh2")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="Fill1" type="OmniLight3D" parent="."]
+position = Vector3(5.25, 3.10, 4.9)
+light_color = Color(0.5, 0.91, 0.72, 1)
+light_energy = 5.1
+light_volumetric_fog_energy = 0.06
+omni_range = 8.4
+omni_attenuation = 1.05
+
+[node name="SignPanel" type="MeshInstance3D" parent="."]
+position = Vector3(-4.82, 2.62, -7.67)
+mesh = SubResource("Mesh3")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="SectorSign" type="Label3D" parent="."]
+position = Vector3(-4.82, 2.62, -7.61)
+text = "02 / НАСОСНАЯ"
+font_size = 88
+pixel_size = 0.0044
+outline_size = 5
+outline_modulate = Color(0.016, 0.024, 0.033, 1)
+double_sided = false
+modulate = Color(0.8, 1, 0.88, 1)
+cast_shadow = 0
+
+[node name="ShallowWater" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.041, 0)
+mesh = SubResource("Mesh4")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="CeilingPipe0" type="MeshInstance3D" parent="."]
+position = Vector3(0, 3.52, -5.5)
+mesh = SubResource("Mesh5")
+metadata/finish = &"rust"
+
+[node name="CeilingPipe1" type="MeshInstance3D" parent="."]
+position = Vector3(0, 3.52, -3.55)
+mesh = SubResource("Mesh5")
+metadata/finish = &"rust"
+
+[node name="CeilingPipe2" type="MeshInstance3D" parent="."]
+position = Vector3(0, 3.52, 3.55)
+mesh = SubResource("Mesh5")
+metadata/finish = &"rust"
+
+[node name="CeilingPipe3" type="MeshInstance3D" parent="."]
+position = Vector3(0, 3.52, 5.5)
+mesh = SubResource("Mesh5")
+metadata/finish = &"rust"
+
+[node name="Pump0" type="StaticBody3D" parent="."]
+position = Vector3(3.85, 0.88, -4.67)
+
+[node name="Collision" type="CollisionShape3D" parent="Pump0"]
+shape = SubResource("Shape0")
+
+[node name="Mesh" type="MeshInstance3D" parent="Pump0"]
+mesh = SubResource("Mesh6")
+metadata/finish = &"panel"
+
+[node name="PumpGauge0" type="MeshInstance3D" parent="."]
+position = Vector3(3.85, 1.49, -3.51)
+mesh = SubResource("Mesh7")
+cast_shadow = 0
+gi_mode = 0
+
+[node name="Pump1" type="StaticBody3D" parent="."]
+position = Vector3(5.25, 0.88, -4.67)
+
+[node name="Collision" type="CollisionShape3D" parent="Pump1"]
+shape = SubResource("Shape0")
+
+[node name="Mesh" type="MeshInstance3D" parent="Pump1"]
+mesh = SubResource("Mesh6")
+metadata/finish = &"panel"
+
+[node name="PumpGauge1" type="MeshInstance3D" parent="."]
+position = Vector3(5.25, 1.49, -3.51)
+mesh = SubResource("Mesh7")
+cast_shadow = 0
+gi_mode = 0

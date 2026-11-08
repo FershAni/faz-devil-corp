@@ -10,9 +10,9 @@ import sys
 def prepare_post(platform, version, notes, release_url, project_url):
     if platform == "windows":
         title = f"🖥️ Faz Devil Corp {version} · Windows"
-        subtitle = "Архив · EXE + DLL"
-        download = "Скачать EXE в ZIP"
-        asset = "FazDevilCorp-Windows-x64.zip"
+        subtitle = "Установщик · EXE"
+        download = "Скачать EXE"
+        asset = "FazDevilCorp-Windows-Setup.exe"
     else:
         title = f"📱 Faz Devil Corp {version} · Android"
         subtitle = "Тестовая сборка · APK"

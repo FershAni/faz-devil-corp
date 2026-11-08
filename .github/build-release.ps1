@@ -1,6 +1,7 @@
 param(
     [Parameter(Mandatory)][string]$Godot,
     [Parameter(Mandatory)][string]$Output,
+    [Parameter(Mandatory)][string]$Iscc,
     [switch]$AndroidRelease,
     [int]$AndroidVersionCode,
     [string]$Version
@@ -53,5 +54,10 @@ if ($AndroidRelease) {
 }
 if (!(Test-Path -LiteralPath $apk -PathType Leaf)) { throw 'Missing Android APK' }
 
-Compress-Archive -Path "$Output/windows/*" -DestinationPath "$Output/FazDevilCorp-Windows-x64.zip"
-Get-Item "$Output/FazDevilCorp-Windows-x64.zip", $apk | Select-Object Name, Length
+$windows = Join-Path $Output 'windows'
+Set-Content -LiteralPath "$windows/steam_appid.txt" -Value '480' -Encoding ascii
+$installerArgs = @("/DPayloadDir=$windows", "/O$Output", '/FFazDevilCorp-Windows-Setup')
+if ($AndroidRelease) { $installerArgs += "/DMyAppVersion=$($Version.Substring(1))" }
+& $Iscc @installerArgs (Join-Path $project 'installer/fazdevilcorp.iss')
+if ($LASTEXITCODE -ne 0) { throw 'Windows installer compilation failed' }
+Get-Item "$Output/FazDevilCorp-Windows-Setup.exe", $apk | Select-Object Name, Length

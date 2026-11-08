@@ -75,6 +75,8 @@ jobs:
           GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
           $output = "$env:RUNNER_TEMP/faz-build"
+          $iscc = "${env:ProgramFiles(x86)}/Inno Setup 6/ISCC.exe"
+          if (!(Test-Path -LiteralPath $iscc)) { throw "Inno Setup compiler missing: $iscc" }
           if ($env:PUBLISH -eq 'true') {
             if ([string]::IsNullOrWhiteSpace($env:NOTES)) { throw 'Release notes are required' }
             if (!$env:ANDROID_KEYSTORE_BASE64 -or !$env:GODOT_ANDROID_KEYSTORE_RELEASE_USER -or !$env:GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD) {
@@ -83,7 +85,7 @@ jobs:
             $env:GODOT_ANDROID_KEYSTORE_RELEASE_PATH = "$env:RUNNER_TEMP/release.keystore"
             [IO.File]::WriteAllBytes($env:GODOT_ANDROID_KEYSTORE_RELEASE_PATH, [Convert]::FromBase64String($env:ANDROID_KEYSTORE_BASE64))
             try {
-              ./.github/build-release.ps1 -Godot $env:GODOT_CONSOLE -Output $output -AndroidRelease -AndroidVersionCode $env:VERSION_CODE -Version $env:VERSION
+              ./.github/build-release.ps1 -Godot $env:GODOT_CONSOLE -Output $output -Iscc $iscc -AndroidRelease -AndroidVersionCode $env:VERSION_CODE -Version $env:VERSION
             } finally {
               Remove-Item -LiteralPath $env:GODOT_ANDROID_KEYSTORE_RELEASE_PATH
             }
@@ -93,7 +95,7 @@ jobs:
             $env:GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD = 'android'
             & "$env:JAVA_HOME/bin/keytool.exe" -genkeypair -keystore $env:GODOT_ANDROID_KEYSTORE_DEBUG_PATH -storepass android -keypass android -alias androiddebugkey -dname 'CN=Android Debug' -keyalg RSA -keysize 2048 -validity 3650
             if ($LASTEXITCODE -ne 0) { throw 'Debug keystore generation failed' }
-            ./.github/build-release.ps1 -Godot $env:GODOT_CONSOLE -Output $output
+            ./.github/build-release.ps1 -Godot $env:GODOT_CONSOLE -Output $output -Iscc $iscc
           }
           & "$env:ANDROID_HOME/build-tools/35.0.1/apksigner.bat" verify "$output/FazDevilCorp-Android-Test.apk"
           if ($LASTEXITCODE -ne 0) { throw 'APK signature verification failed' }
@@ -101,7 +103,7 @@ jobs:
         with:
           name: faz-builds
           path: |
-            ${{ runner.temp }}/faz-build/FazDevilCorp-Windows-x64.zip
+            ${{ runner.temp }}/faz-build/FazDevilCorp-Windows-Setup.exe
             ${{ runner.temp }}/faz-build/FazDevilCorp-Android-Test.apk
           if-no-files-found: error
 
@@ -128,7 +130,7 @@ jobs:
           printf '%s\n' "$NOTES" > release-notes.md
           url=$(gh release create "$VERSION" --target "$GITHUB_SHA" --title "$VERSION" \
             --prerelease --notes-file release-notes.md \
-            FazDevilCorp-Windows-x64.zip FazDevilCorp-Android-Test.apk)
+            FazDevilCorp-Windows-Setup.exe FazDevilCorp-Android-Test.apk)
           printf 'url=%s\n' "$url" >> "$GITHUB_OUTPUT"
           printf 'GitHub Release: %s\n' "$url" >> "$GITHUB_STEP_SUMMARY"
 

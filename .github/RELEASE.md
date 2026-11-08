@@ -15,7 +15,7 @@
 } | ConvertTo-Json -Compress | gh workflow run release.yml --ref main --json
 ```
 
-Проверка без публикации: `gh workflow run release.yml --ref main -f publish=false`. В результате будет артефакт `faz-builds`. Windows EXE поставляется в ZIP вместе с нужными DLL. APK для проверки подписывается временным отладочным ключом.
+Проверка без публикации: `gh workflow run release.yml --ref main -f publish=false`. В результате будет артефакт `faz-builds`. Windows поставляется как EXE-установщик Inno Setup со всеми нужными DLL. APK для проверки подписывается временным отладочным ключом.
 
 ## Настройка публикации
 

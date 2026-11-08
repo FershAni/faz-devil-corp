@@ -3,7 +3,12 @@
 ; The payload is the exported release build in ..\build (exe + GodotSteam + steam_api64 + app id).
 
 #define MyAppName "Faz Devil Corp"
-#define MyAppVersion "0.1.0"
+#ifndef MyAppVersion
+  #define MyAppVersion "0.1.0"
+#endif
+#ifndef PayloadDir
+  #define PayloadDir "..\build"
+#endif
 #define MyAppPublisher "FazDevilCorp"
 #define MyAppExeName "FazDevilCorp.exe"
 
@@ -37,12 +42,12 @@ Name: "en"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
-Source: "..\build\FazDevilCorp.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\build\libgodotsteam.windows.template_release.x86_64.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\build\steam_api64.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#PayloadDir}\FazDevilCorp.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#PayloadDir}\libgodotsteam.windows.template_release.x86_64.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#PayloadDir}\steam_api64.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; Test AppID for Valve's SpaceWar (480). Steam resolves it from the working directory,
 ; which is why every shortcut below sets WorkingDirectory explicitly.
-Source: "..\build\steam_appid.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#PayloadDir}\steam_appid.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "HOW_TO_PLAY.txt"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]

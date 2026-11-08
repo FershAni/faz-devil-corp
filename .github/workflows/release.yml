@@ -1,0 +1,184 @@
+name: Faz Devil Corp release
+run-name: Release ${{ inputs.version || 'build only' }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Git tag, e.g. v0.3.0-beta.1
+        type: string
+      android_version_code:
+        description: Android versionCode, greater than the last published APK
+        type: number
+      notes:
+        description: Release notes for players
+        type: string
+      publish:
+        description: Publish to GitHub Releases and Telegram
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: faz-release-${{ inputs.version || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-2025
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install Godot and Android export tools
+        shell: pwsh
+        run: |
+          $version = '4.7.2'
+          $base = "https://github.com/godotengine/godot-builds/releases/download/$version-stable"
+          $engine = "Godot_v$version-stable"
+          $temp = $env:RUNNER_TEMP
+          Invoke-WebRequest "$base/${engine}_win64.exe.zip" -OutFile "$temp/godot.zip"
+          Expand-Archive "$temp/godot.zip" "$temp/godot"
+          Invoke-WebRequest "$base/${engine}_export_templates.tpz" -OutFile "$temp/templates.zip"
+          Expand-Archive "$temp/templates.zip" "$temp/godot-templates"
+          $templates = "$env:APPDATA/Godot/export_templates"
+          New-Item -ItemType Directory -Force $templates | Out-Null
+          Move-Item "$temp/godot-templates/templates" "$templates/$version.stable"
+
+          $sdk = $env:ANDROID_HOME.Replace('\', '/')
+          $java = $env:JAVA_HOME.Replace('\', '/')
+          & "$sdk/cmdline-tools/latest/bin/sdkmanager.bat" 'platform-tools' 'build-tools;35.0.1'
+          if ($LASTEXITCODE -ne 0) { throw 'Android SDK setup failed' }
+          @"
+          [gd_resource type="EditorSettings" format=3]
+
+          [resource]
+          export/android/java_sdk_path = "$java"
+          export/android/android_sdk_path = "$sdk"
+          "@ | Set-Content "$env:APPDATA/Godot/editor_settings-4.7.tres"
+          "GODOT_CONSOLE=$temp/godot/${engine}_win64_console.exe" >> $env:GITHUB_ENV
+
+      - name: Export Windows and Android
+        shell: pwsh
+        env:
+          PUBLISH: ${{ inputs.publish }}
+          VERSION: ${{ inputs.version }}
+          VERSION_CODE: ${{ inputs.android_version_code }}
+          NOTES: ${{ inputs.notes }}
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          GODOT_ANDROID_KEYSTORE_RELEASE_USER: ${{ secrets.ANDROID_KEYSTORE_USER }}
+          GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          $output = "$env:RUNNER_TEMP/faz-build"
+          if ($env:PUBLISH -eq 'true') {
+            if ([string]::IsNullOrWhiteSpace($env:NOTES)) { throw 'Release notes are required' }
+            if (!$env:ANDROID_KEYSTORE_BASE64 -or !$env:GODOT_ANDROID_KEYSTORE_RELEASE_USER -or !$env:GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD) {
+              throw 'Configure the Android signing secrets before publishing'
+            }
+            $env:GODOT_ANDROID_KEYSTORE_RELEASE_PATH = "$env:RUNNER_TEMP/release.keystore"
+            [IO.File]::WriteAllBytes($env:GODOT_ANDROID_KEYSTORE_RELEASE_PATH, [Convert]::FromBase64String($env:ANDROID_KEYSTORE_BASE64))
+            try {
+              ./.github/build-release.ps1 -Godot $env:GODOT_CONSOLE -Output $output -AndroidRelease -AndroidVersionCode $env:VERSION_CODE -Version $env:VERSION
+            } finally {
+              Remove-Item -LiteralPath $env:GODOT_ANDROID_KEYSTORE_RELEASE_PATH
+            }
+          } else {
+            $env:GODOT_ANDROID_KEYSTORE_DEBUG_PATH = "$env:RUNNER_TEMP/debug.keystore"
+            $env:GODOT_ANDROID_KEYSTORE_DEBUG_USER = 'androiddebugkey'
+            $env:GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD = 'android'
+            & "$env:JAVA_HOME/bin/keytool.exe" -genkeypair -keystore $env:GODOT_ANDROID_KEYSTORE_DEBUG_PATH -storepass android -keypass android -alias androiddebugkey -dname 'CN=Android Debug' -keyalg RSA -keysize 2048 -validity 3650
+            if ($LASTEXITCODE -ne 0) { throw 'Debug keystore generation failed' }
+            ./.github/build-release.ps1 -Godot $env:GODOT_CONSOLE -Output $output
+          }
+          & "$env:ANDROID_HOME/build-tools/35.0.1/apksigner.bat" verify "$output/FazDevilCorp-Android-Test.apk"
+          if ($LASTEXITCODE -ne 0) { throw 'APK signature verification failed' }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: faz-builds
+          path: |
+            ${{ runner.temp }}/faz-build/FazDevilCorp-Windows-x64.zip
+            ${{ runner.temp }}/faz-build/FazDevilCorp-Android-Test.apk
+          if-no-files-found: error
+
+  release:
+    if: inputs.publish
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      url: ${{ steps.publish.outputs.url }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: faz-builds
+      - name: Publish GitHub Release
+        id: publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ inputs.version }}
+          NOTES: ${{ inputs.notes }}
+        run: |
+          printf '%s\n' "$NOTES" > release-notes.md
+          url=$(gh release create "$VERSION" --target "$GITHUB_SHA" --title "$VERSION" \
+            --prerelease --notes-file release-notes.md \
+            FazDevilCorp-Windows-x64.zip FazDevilCorp-Android-Test.apk)
+          printf 'url=%s\n' "$url" >> "$GITHUB_OUTPUT"
+          printf 'GitHub Release: %s\n' "$url" >> "$GITHUB_STEP_SUMMARY"
+
+  telegram:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: faz-builds
+      - name: Post release in Telegram
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          VERSION: ${{ inputs.version }}
+          NOTES: ${{ inputs.notes }}
+          RELEASE_URL: ${{ needs.release.outputs.url }}
+        run: |
+          if [[ -z "$BOT_TOKEN" || -z "$CHAT_ID" ]]; then
+            echo 'Configure TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID.'
+            exit 1
+          fi
+          apk=FazDevilCorp-Android-Test.apk
+          windows=FazDevilCorp-Windows-x64.zip
+          printf -v text 'Faz Devil Corp %s\n\n%s\n\nWindows и Android: %s' "$VERSION" "$NOTES" "$RELEASE_URL"
+          # Count UTF-16 units conservatively for Telegram's caption and message limits.
+          length=$(printf '%s' "$text" | iconv -f UTF-8 -t UTF-16LE | wc -c)
+          if (( length <= 2048 && $(stat -c %s "$apk") <= 50000000 && $(stat -c %s "$windows") <= 50000000 )); then
+            media=$(jq -cn --arg caption "$text" '[
+              {type:"document", media:"attach://windows", caption:$caption},
+              {type:"document", media:"attach://android"}
+            ]')
+            response=$(curl -s --max-time 180 "https://api.telegram.org/bot$BOT_TOKEN/sendMediaGroup" \
+              --form-string "chat_id=$CHAT_ID" --form-string "media=$media" \
+              -F "windows=@$windows" -F "android=@$apk")
+          elif (( length <= 2048 && $(stat -c %s "$apk") <= 50000000 )); then
+            response=$(curl -s --max-time 180 "https://api.telegram.org/bot$BOT_TOKEN/sendDocument" \
+              --form-string "chat_id=$CHAT_ID" --form-string "caption=$text" -F "document=@$apk")
+          else
+            if (( length > 8192 )); then
+              preview=$(printf '%s' "$NOTES" | jq -Rs '.[0:1500]' -r)
+              printf -v text 'Faz Devil Corp %s\n\n%s…\n\nПолный список изменений и файлы: %s' "$VERSION" "$preview" "$RELEASE_URL"
+            fi
+            response=$(curl -s --max-time 30 "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
+              --data-urlencode "chat_id=$CHAT_ID" --data-urlencode "text=$text")
+          fi
+          if ! jq -e '.ok == true' <<< "$response" >/dev/null; then
+            jq -r '.description // "Telegram API request failed"' <<< "$response"
+            exit 1
+          fi
+          jq -r '.result | if type == "array" then .[0] else . end | if .chat.username then
+            "Telegram: https://t.me/\(.chat.username)/\(.message_id)"
+            else "Telegram message ID: \(.message_id)" end' <<< "$response" >> "$GITHUB_STEP_SUMMARY"
